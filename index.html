@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DynamicVerse</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/PLYLoader.js"></script>
+    <!-- <base href="./"> -->
+
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div class="logo-container">
+                    <a href="#" class="logo">DynamicVerse</a>
+                </div>
+                <div class="nav-links" style="display: flex; gap: 20px; justify-content: flex-end;">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>DynamicVerse</h1>
+            <p>Physically-Aware Multimodal Modeling for Dynamic 4D Worlds</p>
+            <video id="demoVideo" autoplay loop muted playsinline>
+                <source src="assets/Teaser_long_480P.mp4" type="video/mp4">
+            </video>
+        </div>
+    </header>
+
+
+
+       <section class="features" id="pipeline">
+        <div class="container">
+                <div class="feature-card">
+                    <h2>DynamicVerse: Physically-Aware Multimodal Modeling for Dynamic 4D Worlds</h2>
+                    <img src="assets/teaser.png" alt="Pipeline" class="pipeline-image">
+                </div>
+        </div>
+    </section>
+
+    
+    <section class="features" id="overview">
+        <div class="container">
+            <div class="feature-grid">                
+            
+                <div class="feature-card-left">
+                    <h2>Abstract</h2>
+                    <!-- <h3>Moving Object Recovery</h3> -->
+                    <p>Understanding the dynamic physical world, characterized by its evolving 3D structure, real-world motion, and semantic content with textual descriptions, is crucial for human-agent interaction and enables embodied agents to perceive and act within real environments with human‑like capabilities.
+                    However, existing datasets are often derived from limited simulators or utilize traditional Structure-from-Motion for up-to-scale annotation and offer limited descriptive captioning, which restricts the capacity of foundation models to accurately interpret real-world dynamics from monocular videos, commonly sourced from the internet.
+                    <br>                
+                    To bridge these gaps, we introduce <strong>DynamicVerse</strong>, a physical‑scale, multimodal 4D modeling framework for real-world video. We employ large vision, geometric, and multimodal models to interpret metric-scale static geometry, real-world dynamic motion, instance-level masks, and holistic descriptive captions. 
+                    By integrating window-based Bundle Adjustment with global optimization, our method converts long real-world video sequences into a comprehensive 4D multimodal format. 
+                    DynamicVerse delivers a large-scale dataset consists of 100K+ videos with 800K+ annotated masks and 10M+ frames from internet videos.
+                    Experimental evaluations on three benchmark tasks---video depth estimation, camera pose estimation, and camera intrinsics estimation---validate that our 4D modeling achieves superior performance in capturing physical-scale measurements with greater global accuracy than existing methods..</p>
+                </div>         
+            </div>
+        </div>
+    </section>
+
+
+
+    <section class="features" id="pipeline">
+        <div class="container">
+                <div class="feature-card">
+                    <h2>DynamicVerse: Dataset Overview</h2>
+                    <img src="assets/DynamicVerse_Overview.png" alt="Pipeline" class="pipeline-image">
+                    The overview of our dataset <strong>DynamicVerse</strong>.
+                </div>
+        </div>
+    </section>
+
+
+    <section class="features" id="pipeline">
+        <div class="container">
+                <div class="feature-card">                    
+            <h2>DynamicGen: Pipeline Overview</h2>
+                    <img src="assets/DynamicGen_pipeline.png" alt="Pipeline" class="pipeline-image">
+                    The physically-aware multi-modal 4D data generation pipeline <strong>DynamicGen</strong>.
+                </div>
+        </div>
+    </section>
+
+
+    <section class="features" id="pipeline">
+        <div class="container">
+                <div class="feature-card">                    
+            <h2>DynamicVerse: Data Statistics</h2>
+                    <img src="assets/data_statistics.png" alt="Pipeline" class="pipeline-image">
+                    The statistics and data source of our dataset <strong>DynamicVerse</strong>.
+                </div>
+        </div>
+    </section>
+
+    
+
+
+    <section class="features" id="overview">
+        <div class="container">
+            <h2>Key Capabilities</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Moving Object Recovery</h3>
+                    <p>Isolates moving objects from the static background in video frames by pixel.</p>
+                </div>                
+                <div class="feature-card">
+                    <h3>Metric-Scale 4D Reconstruction</h3>
+                    <p>Reconstruct dynamic point clouds from videos by estimating depths and camera poses.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Dynamic Content Captioning</h3>
+                    <p>Generates textual descriptions that explain the actions, events, or changes occurring within dynamic visual content, like videos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+    <!-- <section class="tech-details" id="reconstruction">
+        <div class="container" style="text-align: center;">
+            <h2>Metric-Scale 4D Reconstruction</h2>
+        </div> -->
+        
+        <!-- 点云查看器容器 - 全宽 -->
+        <!-- <div class="pointcloud-wrapper">
+            <div class="sequence-selector">
+                <div class="sequence-thumbnails" id="sequenceThumbnails"></div>
+            </div>
+            
+            <div class="pointcloud-viewport" id="viewport">
+                <div class="timeline-control">
+                    <input type="range" id="timeline" min="0" value="0" step="1">
+                    <div class="time-label" id="timeLabel">0</div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <section class="features" id="pipeline">
+        <div class="container">
+                <div class="feature-card">                    
+            <h2>Moving Object Recovery</h2>
+                    <img src="assets/moving_obj_1.png" alt="Pipeline" class="pipeline-image">
+                </div>
+        </div>
+    </section>
+
+
+    <section class="features" id="pipeline">
+        <div class="container">
+                <div class="feature-card">                    
+            <h2>Metric-Scale 4D Reconstruction</h2>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <img src="assets/suppl_vis_1.png" alt="" style="width: 45%; max-width: 400px; height: auto; border-radius: 8px;">
+                <img src="assets/suppl_vis_2.png" alt="" style="width: 45%; max-width: 400px; height: auto; border-radius: 8px;">
+            </div>
+            For more visualizations, please refer to anonymous link:  <a href="https://anonymous_dynamicverse.github.io/" target="_blank">More Amazing Results</a>.
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <section class="features" id="pipeline">
+        <div class="container">
+                <div class="feature-card">                    
+            <h2>Dynamic Content Captioning</h2>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <img src="assets/suppl_cap_1.png" alt="图片描述1" style="width: 45%; max-width: 400px; height: auto; border-radius: 8px;">
+                <img src="assets/suppl_cap_2.png" alt="图片描述2" style="width: 45%; max-width: 400px; height: auto; border-radius: 8px;">
+            </div>
+                </div>
+        </div>
+    </section>
+
+
+
+    <script src="js/scripts.js"></script>
+</body>
+</html>
