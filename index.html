@@ -1,251 +1,908 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DynamicVerse</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/PLYLoader.js"></script>
-    <!-- <base href="./"> -->
+    <head>
+        <title>DynamicVerse</title>
+        <!-- <link rel="icon" type="image/x-icon" href="/static/img/ir3d.ico"> -->
 
-</head>
-<body>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <nav class="navbar">
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <div class="logo-container">
-                    <a href="#" class="logo">DynamicVerse</a>
+        <!-- Open Graph -->
+        <meta property="og:url" content="https://dynamic-verse.github.io/" />
+        <meta property="og:image" content="https://dynamic-verse.github.io/static/img/preview.png" />
+        <meta property="og:title" content="DynamicVerse: Physically-Aware Multimodal Modeling for Dynamic 4D Worlds" />
+        <meta property="og:description" content="is a physical-scale, multi-modal 4D modeling framework for real-world video, which contains a novel automated data curation pipeline and corresponding large-scale 4D dataset." />
+
+        <!-- Twitter -->
+        <meta name="twitter:url" content="https://dynamic-verse.github.io/" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://dynamic-verse.github.io/static/img/preview.png" />
+        <meta name="twitter:title" content="DynamicVerse: Physically-Aware Multimodal Modeling for Dynamic 4D Worlds." />
+        <meta name="twitter:description" content="We introduce DynamicVerse, a physical-scale, multi-modal 4D modeling framework for real-world video, which contains a novel automated data curation pipeline and corresponding large-scale 4D dataset." />
+
+        <script src="./static/js/distill_template.v2.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+        <script src="https://rawgit.com/nstrayer/slid3r/master/dist/slid3r.js"></script>
+
+        <script defer="" src="./static/js/hider.js"></script>
+        <script src="./static/js/image_interact.js"></script>
+        <script src="./static/js/switch_videos.js"></script>
+
+        <link rel="stylesheet" href="./static/css/style.css">
+        <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+            onload="renderMathInElement(document.body);"></script>
+        <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+
+        <!-- medium zoom https://github.com/francoischalifour/medium-zoom -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>  <!-- jquery -->
+        <script defer src="./static/js/medium-zoom.min.js"></script>
+        <script defer src="./static/js/zoom.js"></script>
+
+        <style>
+            .wider-centered-video {
+                width: 140%;
+                display: block;
+                margin-left: -20%;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="header-wrapper">
+            <div class="header-container" id="header-container">
+                <div class="header-content">
+                    <h1 style="margin-top: 0px">DynamicVerse: Physically-Aware Multimodal Modeling for Dynamic 4D Worlds</h1>
+                    <h2>
+                        <i>
+                            "Without spatial intelligence, AGI is fundamentally incomplete." <br>
+                            <span style="display: block; text-align: right;">——Fei-Fei Li</span>
+                        </i>
+                    </h2>
+                    <div class="button-container">
+                        <!-- replace arxiv -->
+                        <a href="https://dynamic-verse.github.io/" class="button paper-link" target="_blank">
+                            <span class="icon is-small">
+                                <i class="ai ai-arxiv "  style="height: 1.5em;"></i>
+                            </span>
+                            ArXiv
+                        </a>
+                        <!-- replace pdf -->
+                        <!-- <a href="https://arxiv.org/pdf/2506.23329" class="button paper-link" target="_blank">
+                            <span class="icon is-small"  style="height: 1.5em;">
+                                <i class="fas fa-file-pdf"></i>
+                            </span>
+                            <span>pdf</span>
+                        </a> -->
+                        <!-- replace image -->
+                        <a href="https://github.com/kairunwen/DynamicVerse" class="button" target="_blank">
+                            <span class="icon is-small"  style="height: 1.5em;">
+                                <i class="fab fa-github"></i>
+                            </span>
+                            <span>Code</span>
+                        </a>
+                        <!-- <br> -->
+                        <!-- <a href="https://youtu.be/tuFEgTn0gnM" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="https://www.logo.wine/a/logo/YouTube/YouTube-Icon-Full-Color-Logo.wine.svg" alt="Hugging Face logo" style="height: 1.5em;">
+                            </span>
+                            <span>Video</span>
+                        </a> -->
+                        <a href="https://huggingface.co/datasets/kairunwen/DynamicVerse" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face logo" style="height: 1.5em;">
+                            </span>
+                            <span>Dataset</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="nav-links" style="display: flex; gap: 20px; justify-content: flex-end;">
+                <div class="header-image">
+                    <img draggable="false" src="static/img/preview.png" alt="Teaser Image" class="teaser-image">
                 </div>
             </div>
         </div>
-    </nav>
-
-    <header class="hero">
-        <div class="container">
-            <h1>DynamicVerse</h1>
-            <p>Physically-Aware Multimodal Modeling for Dynamic 4D Worlds</p>
-            <video id="demoVideo" autoplay loop muted playsinline>
-                <source src="assets/DynamicVerse-preview.mp4" type="video/mp4">
-            </video>
-        </div>
-    </header>
-
-    <section class="features" id="pipeline">
-        <div class="container">
-    <div class="mb-2" style="font-size: medium; text-align: center;">
-        <span class="author-block">
-          <a href="https://kairunwen.github.io/" style="color: #00BFFF;">Kairun Wen</a><sup>1*†</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://yu2hi13.github.io/" style="color: #00BFFF;">Yuzhi Huang</a><sup>1*</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://dynamic-verse.github.io/" style="color: #00BFFF;">Runyu Chen</a><sup>1</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://dynamic-verse.github.io/" style="color: #00BFFF;">Hui Zheng</a><sup>1</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://lyl1015.github.io/" style="color: #00BFFF;">Yunlong Lin</a><sup>1</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://paulpanwang.github.io/" style="color: #00BFFF;">Panwang Pan</a><sup>1</sup></span>,&nbsp;
-        <span class="author-block">
-        <a href="https://paulpanwang.github.io/" style="color: #00BFFF;">Chenxin Li</a><sup>2</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://wenyancong.com/" style="color: #00BFFF;">Wenyan Cong</a><sup>3</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://jian-zhang-3dv.github.io/Jian-Zhang-3DV/" style="color: #00BFFF;">Jian Zhang</a><sup>1</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://dynamic-verse.github.io/" style="color: #00BFFF;">Junbin Lu</a><sup>4</sup></span>,&nbsp;<br>
-        <span class="author-block">
-          <a href="https://chenguolin.github.io/" style="color: #00BFFF;">Chenguo Lin</a><sup>5</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://wdilin.github.io/" style="color: #00BFFF;">Dilin Wang</a><sup>6</sup></span>,&nbsp;
-        <span class="author-block">
-          <a href="https://sites.google.com/view/zhicheng-yan/" style="color: #00BFFF;">Zhicheng Yan</a><sup>6</sup></span>,&nbsp;
-        <span class="author-block">
-            <a href="https://hyxu2006.github.io/" style="color: #00BFFF;">Hongyu Xu</a><sup>6</sup></span>,&nbsp;
-        <span class="author-block">
-            <a href="https://scholar.google.com/citations?user=NiUUDHwAAAAJ&hl=en" style="color: #00BFFF;">Justin Theiss</a><sup>6</sup></span>,&nbsp;
-        <span class="author-block">
-            <a href="https://scholar.google.com/citations?hl=en&user=smxgn4YAAAAJ" style="color: #00BFFF;">Yue Huang</a><sup>1</sup></span>,&nbsp;
-        <span class="author-block">
-            <a href="https://scholar.google.com/citations?hl=en&user=k5hVBfMAAAAJ" style="color: #00BFFF;">Xinghao Ding</a><sup>1</sup></span>,&nbsp;
-        <span class="author-block">
-            <a href="https://www.linkedin.com/in/rakesh-r-3848538/" style="color: #00BFFF;">Rakesh Ranjan</a><sup>6</sup></span>,&nbsp;
-        <span class="author-block">
-            <a href="https://zhiwenfan.github.io/" style="color: #00BFFF;">Zhiwen Fan</a><sup>3</sup></span>
-      </div>
-      <div class="mb-4" style="text-align: center;">        
-        <span><sup>1</sup>XMU</span>,&nbsp;
-        <span><sup>2</sup>CUHK</span>,&nbsp;
-        <span><sup>3</sup>UT Austin</span>,&nbsp;
-        <span><sup>4</sup>UW</span>,&nbsp;
-        <span><sup>5</sup>PKU</span>,&nbsp;
-        <span><sup>6</sup>Meta</span><br>
-        * Equal Contribution † Project Leader
-        <!-- <span class="univerity-block" style="color: rgb(255, 117, 18); font-weight: bolder;">NeurIPS 2024</span> -->
-      </div>
-    </div>
-    </section>
-
-
-
-    <section class="features" id="pipeline">
-        <div class="container">
-            <div class="feature-card">
-                <h2>DynamicVerse: Physically-Aware Multimodal Modeling for Dynamic 4D Worlds</h2>
-                <img src="assets/teaser.png" alt="Pipeline" class="pipeline-image">
+    <d-article>
+        <div class="byline">
+            <div class="byline-container" style="text-align: center;">
+                <p>
+                    <a href="https://kairunwen.github.io/" class="author-link" target="_blank">Kairun Wen<sup>1,*,&dagger;</sup></a>,
+                    <a href="https://yu2hi13.github.io/" class="author-link" target="_blank">Yuzhi Huang<sup>1,*</sup></a>,
+                    <a href="https://dynamic-verse.github.io/" class="author-link" target="_blank">Runyu Chen<sup>1</sup></a>,
+                    <a href="https://dynamic-verse.github.io/" class="author-link" target="_blank">Hui Zheng<sup>1</sup></a>,
+                    <a href="https://lyl1015.github.io/" class="author-link" target="_blank">Yunlong Lin<sup>1</sup></a>,
+                    <a href="https://paulpanwang.github.io/" class="author-link" target="_blank">Panwang Pan<sup>1</sup></a>,
+                    <a href="https://chenxinli001.github.io/" class="author-link" target="_blank">Chenxin Li<sup>2</sup></a>,
+                    <a href="https://wenyancong.com/" class="author-link" target="_blank">Wenyan Cong<sup>3</sup></a>,
+                    <a href="https://jian-zhang-3dv.github.io/Jian-Zhang-3DV/" class="author-link" target="_blank">Jian Zhang<sup>1</sup></a>,
+                    <a href="https://dynamic-verse.github.io/" class="author-link" target="_blank">Junbin Lu<sup>4</sup></a>,
+                    <a href="https://chenguolin.github.io/" class="author-link" target="_blank">Chenguo Lin<sup>5</sup></a>,
+                    <a href="https://wdilin.github.io/" class="author-link" target="_blank">Dilin Wang<sup>6</sup></a>,
+                    <a href="https://sites.google.com/view/zhicheng-yan/" class="author-link" target="_blank">Zhicheng Yan<sup>6</sup></a>,
+                    <a href="https://hyxu2006.github.io/" class="author-link" target="_blank">Hongyu Xu<sup>6</sup></a>,
+                    <a href="https://scholar.google.com/citations?user=NiUUDHwAAAAJ&hl=en" class="author-link" target="_blank">Justin Theiss<sup>6</sup></a>,
+                    <a href="https://scholar.google.com/citations?hl=en&user=smxgn4YAAAAJ" class="author-link" target="_blank">Yue Huang<sup>1</sup></a>,
+                    <a href="https://scholar.google.com/citations?hl=en&user=k5hVBfMAAAAJ" class="author-link" target="_blank">Xinghao Ding<sup>1</sup></a>,
+                    <a href="https://www.linkedin.com/in/rakesh-r-3848538/" class="author-link" target="_blank">Rakesh Ranjan<sup>6</sup></a>,
+                    <a href="https://zhiwenfan.github.io/" class="author-link" target="_blank">Zhiwen Fan<sup>3</sup></a>,
+                </p>
+                <p>                    
+                    <sup>1</sup>XMU <img src="static/img/logo/5_xmu.png" alt="XMU logo" style="height: 1em; vertical-align: middle; margin-left: 0px; margin-right: 5px;">
+                    <sup>2</sup>CUHK <img src="static/img/logo/1_CUHK.jpg" alt="CUHK logo" style="height: 1em; vertical-align: middle; margin-left: 0px; margin-right: 5px;">
+                    <sup>3</sup>UT Austin <img src="static/img/logo/7_ut_austin.png" alt="UT Austin logo" style="height: 1.5em; vertical-align: middle; margin-left: 0px;">
+                    <sup>4</sup>UW <img src="static/img/logo/8_uw.jpg" alt="UW logo" style="height: 1.5em; vertical-align: middle; margin-left: 0px;">
+                    <sup>5</sup>PKU <img src="static/img/logo/9_PKU.png" alt="PKU logo" style="height: 1.5em; vertical-align: middle; margin-left: 0px;">
+                    <sup>6</sup>Meta <img src="static/img/logo/10_meta.png" alt="Meta logo" style="height: 1.5em; vertical-align: middle; margin-left: 0px;">
+                </p>
+                <p style="text-align: center; margin-bottom: 0;">
+                    <span class="author-note"><sup>*</sup>Equal Contribution</span>&emsp;
+                    <span class="author-note"><sup>&dagger;</sup>Project Leader</span>
+                </p>
             </div>
         </div>
-    </section>
 
-    
-    <section class="features" id="overview">
-        <div class="container">
-            <div class="feature-grid">                
+
+
+        </div>
+            <div id='inverse_rendering' class="sub-section">
+                <!-- <h2 class="text">Inverse Rendering</h2>             -->
+            <d-figure id="fig-studyadapter" >
+                <figure>
+                    <img data-zoomable="" draggable="false" src="static/img/teaser.png" alt="Stage 1 Pipeline">
+                </figure>
+            </d-figure>
+            <p style="text-align: center;">
+                TLDR: <strong>DynamicVerse</strong> is a physical-scale, multi-modal 4D modeling framework for real-world video, which contains a novel automated data curation pipeline and corresponding large-scale 4D dataset.
+            </p>
+
+
+
+
+
+
+
+        <!-- <div style="width: 100%; max-width: 800px; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+            <iframe
+              src="https://www.youtube.com/embed/GRQ9ZjyP5tY?autoplay=1&mute=1&loop=1&playlist=GRQ9ZjyP5tY&controls=0&playsinline=1"
+              title="YouTube video"
+              allow="autoplay; encrypted-media"
+              allowfullscreen
+              style="width: 100%; height: 100%; border: none;"
+            ></iframe>
+          </div> -->
+
+        <p style="text-align: center;">    
+            <ul>
+              <li>We develop <strong>DynamicGen</strong>, a novel automated data curation pipeline designed to generate physically-aware multi-modal 4D data at scale. This pipeline contains two main stages: (1) metric-scale geometry and moving object recovery from raw videos, and (2) hierarchical detailed semantic captions generation at three granularities (i.e., object, camera and scene). Powered by foundation models (i.e., VFMs, VLMs, LLMs), DynamicGen efficiently generate 4D data at scale, thus addressing the critical scalability, physical reality and modality diversity limitations of traditional 4D data curation.</li>
+              <li>We introduce <strong>DynamicVerse</strong>, a large-scale 4D dataset featuring diverse dynamic scenes accompanied by rich multi-modal annotations including metric-scale point maps, camera parameters, object masks with corresponding categories, and detailed descriptive captions. DynamicVerse encompasses 100K+ 4D scenes coupled with 800K+ masklets, sourced through a combination of massive 2D video datasets and existing 4D datasets. This represents a significant improvement in terms of data scale, scene and modality diversity compared to prior 4D datasets.</li>
+            </ul>
+        </p>
+
+        <div class="icon-row">
+            <a href="#demo_video" class="icon-link">
+                <img src="static/img/icons/recipe.svg" alt="Visual Representation Logo" class="icon">
+                Demo<br>Video
+            </a>
+            <a href="#dynamicgen_pipeline" class="icon-link">
+                <img src="static/img/icons/data.svg" alt="Connector Logo" class="icon">
+                DynamicGen<br>Pipeline
+            </a>
+            <a href="#dynamicverse_dataset" class="icon-link">
+                <img src="static/img/icons/eval.svg" alt="Recipe Logo" class="icon">
+                DynamicVerse<br>Dataset
+            </a>
+            <a href="#moving_obj_geometry" class="icon-link">
+                <img src="static/img/icons/visual.svg" alt="Data Logo" class="icon">
+                Moving Object<br>Recovering
+            </a>
+            <a href="#moving_obj_geometry" class="icon-link">
+                <img src="static/img/icons/eval.svg" alt="Recipe Logo" class="icon">
+                Metric-scale<br>4D Reconstruction
+            </a>
+            <a href="#dynamic_content_captioning" class="icon-link">
+                <img src="static/img/icons/data.svg" alt="Connector Logo" class="icon">
+                Dynamic Content<br>Captioning
+            </a>
             
-                <div class="feature-card-left">
-                    <h2>Abstract</h2>
-                    <!-- <h3>Moving Object Recovery</h3> -->
-                    <p>Understanding the dynamic physical world, characterized by its evolving 3D structure, real-world motion, and semantic content with textual descriptions, is crucial for human-agent interaction and enables embodied agents to perceive and act within real environments with human‑like capabilities.
-                    However, existing datasets are often derived from limited simulators or utilize traditional Structure-from-Motion for up-to-scale annotation and offer limited descriptive captioning, which restricts the capacity of foundation models to accurately interpret real-world dynamics from monocular videos, commonly sourced from the internet.
-                    <br>                
-                    To bridge these gaps, we introduce <strong>DynamicVerse</strong>, a physical‑scale, multimodal 4D modeling framework for real-world video. We employ large vision, geometric, and multimodal models to interpret metric-scale static geometry, real-world dynamic motion, instance-level masks, and holistic descriptive captions. 
-                    By integrating window-based Bundle Adjustment with global optimization, our method converts long real-world video sequences into a comprehensive 4D multimodal format. 
-                    DynamicVerse delivers a large-scale dataset consists of 100K+ videos with 800K+ annotated masks and 10M+ frames from internet videos.
-                    Experimental evaluations on three benchmark tasks---video depth estimation, camera pose estimation, and camera intrinsics estimation---validate that our 4D modeling achieves superior performance in capturing physical-scale measurements with greater global accuracy than existing methods..</p>
-                </div>         
-            </div>
         </div>
-    </section>
 
+        <p class="click-hint" style="width: 85%;">
+            <img src="static/img/icons/click.gif" style="width: 1.5rem">
+            <strong>Click to jump to each section.</strong>
+        </p>
+        <hr>
+        <div id='visual_representations' class="vision-block">
 
-
-    <section class="features" id="pipeline">
-        <div class="container">
-                <div class="feature-card">
-                    <h2>DynamicVerse: Dataset Overview</h2>
-                    <img src="assets/DynamicVerse_Overview.png" alt="Pipeline" class="pipeline-image">
-                    The overview of our dataset <strong>DynamicVerse</strong>.
-                </div>
-        </div>
-    </section>
-
-
-    <section class="features" id="pipeline">
-        <div class="container">
-                <div class="feature-card">                    
-            <h2>DynamicGen: Pipeline Overview</h2>
-                    <img src="assets/DynamicGen_pipeline.png" alt="Pipeline" class="pipeline-image">
-                    The physically-aware multi-modal 4D data generation pipeline <strong>DynamicGen</strong>.
-                </div>
-        </div>
-    </section>
-
-
-    <section class="features" id="pipeline">
-        <div class="container">
-                <div class="feature-card">                    
-            <h2>DynamicVerse: Data Statistics</h2>
-                    <img src="assets/data_statistics.png" alt="Pipeline" class="pipeline-image">
-                    The statistics and data source of our dataset <strong>DynamicVerse</strong>.
-                </div>
-        </div>
-    </section>
-
-    
-
-
-    <section class="features" id="overview">
-        <div class="container">
-            <h2>Key Capabilities</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>Moving Object Recovery</h3>
-                    <p>Isolates moving objects from the static background in video frames by pixel.</p>
-                </div>                
-                <div class="feature-card">
-                    <h3>Metric-Scale 4D Reconstruction</h3>
-                    <p>Reconstruct dynamic point clouds from videos by estimating depths and camera poses.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Dynamic Content Captioning</h3>
-                    <p>Generates textual descriptions that explain the actions, events, or changes occurring within dynamic visual content, like videos.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
-
-
-
-
-    <!-- <section class="tech-details" id="reconstruction">
-        <div class="container" style="text-align: center;">
-            <h2>Metric-Scale 4D Reconstruction</h2>
-        </div> -->
+            
         
-        <!-- 点云查看器容器 - 全宽 -->
-        <!-- <div class="pointcloud-wrapper">
-            <div class="sequence-selector">
-                <div class="sequence-thumbnails" id="sequenceThumbnails"></div>
+        <div id='demo_video' class="sub-section">
+            <h2 class="text">Demo Video</h2>
+            <video autoplay loop muted playsinline style="width: 140%; display: block; margin: 0 auto; margin-left: -20%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                <source src="./static/img/DynamicVerse-preview.mp4" type="video/mp4">
+            </video>
+            <p class="text">
+                We provide a demo video (Raw video➡️Moving Object Recovery➡️Dynamic Point Cloud) to showcase the Metric-scale 4D Reconstruction capability of DynamicGen. The generated fine-grained semantic annotations can be found at subsequent section.
+            </p>
+        </div>
+
+        <div class="vision-block">
+            <div id="metrics" class="sub-section">
+            <h2 class="text">Motivation </h2>
+            <ul class="text" style="list-style-type: none; padding-left: 1.5rem;">
+                <li><b>🔷Limited Data Diversity and Realism:</b> indoor scenes or autonomous driving / "simulation-to-real" gap.</li>
+                <li><b>🔷Lack of Physical Scale & Rich Semantics:</b> no metric-scale geometry & detailed descriptive captions.</li>
+                <li><b>🔷Non-Scalability:</b> using multiple sensors is not a scalable process.</li>
+            </ul>
             </div>
-            
-            <div class="pointcloud-viewport" id="viewport">
-                <div class="timeline-control">
-                    <input type="range" id="timeline" min="0" value="0" step="1">
-                    <div class="time-label" id="timeLabel">0</div>
+        </div>
+
+        <div id='dynamicgen_pipeline' class="sub-section">
+            <h2 class="text">DynamicGen Pipeline</h2>
+            <p class="text">
+                The DynamicGen pipeline contains two main stages: (1) metric-scale geometric
+                and moving object recovery (i.e., object category, mask and size) from raw videos, and (2) hierarchical dynamic contents (i.e., object, camera and scene) detailed caption generation. This pipeline primarily consists of five steps: 4D scene curation, data filter strategy, moving object recovery, dynamic bundle adjustment and dynamic content caption generation.
+            </p>
+            <d-figure id="fig-studyadapter" >
+                <figure>
+                    <img data-zoomable="" draggable="false" src="static/img/DynamicGen_pipeline.png" alt="Stage 1 Pipeline">
+                </figure>
+            </d-figure>
+        </div>
+
+        <div class="vision-block">
+            <div id="moving_obj_geometry" class="sub-section">
+            <h1 class="text">Stage 1: Moving Object and Metric-scale Geometry Recovery </h1>
+                <p class="text">
+                    We provide visual comparison of the moving object  segmentation and metric-scale geometry recovery results. We also provide dynamic point cloud reconstruction results on more in-the-wild data.
+                </p>
+
+                <video autoplay loop muted playsinline style="width: 140%; display: block;  margin-left: -17%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                    <source src="./static/img/Moving_Obj_Seg_480P.mp4" type="video/mp4">
+                </video>
+                <video autoplay loop muted playsinline style="width: 140%; display: block;  margin-left: -17%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                    <source src="./static/img/BA_wild_480P.mp4" type="video/mp4">
+                </video>
+                <d-figure id="fig-studyadapter" >
+                    <figure>
+                        <img data-zoomable="" draggable="false" src="static/img/BA.png" alt="Stage 2 Pipeline" style="width: 95%; display: block; margin: 0 auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); border: 1px solid #e0e0e0;">
+                    </figure>
+                </d-figure>
+            </div>
+        </div>
+        <br>
+        </br>
+
+        <div class="vision-block">
+            <div id="dynamic_content_captioning" class="sub-section">
+            <h1 class="text">Stage 2: Dynamic Content Captioning </h1>
+                <p class="text">
+                    We provide a comprehensive caption at three specific
+                    levels: moving object, dynamic scene, and camera motion.
+                </p>          
+                <d-figure id="fig-studyadapter" >
+                    <figure>
+                        <img data-zoomable="" draggable="false" src="static/img/Captions.png" alt="Stage 2 Pipeline">
+                    </figure>
+                </d-figure>
+                <div class="text" style="grid-column: text;">
+                    <div class="dataset-container">
+                    <!-- Image Carousel Section -->
+                    <div class="image-carousel-container">
+                        <div class="image-carousel">
+                            <div class="carousel-item" data-json-src="static/img/dataset/CLEVR_val_000000.json">
+                                <!-- <img src="static/img/dataset/CLEVR_val_000000.png" alt="CLEVR Dataset Sample 1"> -->
+                                <video autoplay loop muted playsinline width="100%" height="250" style="object-fit: cover; display: block;">
+                                    <source src="static/img/captions/blackswan_web.mp4" type="video/mp4">
+                                </video>
+                                <script type="application/json">
+                                {
+                                    "object_category": "Black swan",
+                                    "camera_caption": "The camera smoothly tracks rightward, maintaining a steady focus as it follows the black swan from the side.",
+                                    "object_caption": "A graceful swan with a sleek, elongated neck and a striking black plumage glides smoothly across the water. Its body is robust, with feathers that appear soft and layered, creating a textured pattern that catches the light subtly. The swan's head is held high, showcasing a vibrant red beak that contrasts sharply with its dark feathers. As it moves, the swan's neck undulates gently, propelling it forward with a serene and effortless grace. The swan's eyes are alert, scanning its surroundings with a calm and composed demeanor. Throughout its journey, the swan maintains a steady pace, occasionally adjusting its direction with a slight flick of its neck, demonstrating both elegance and control in its aquatic environment.",
+                                    "scene_caption": "A black swan glides smoothly across a calm pond, its sleek body and bright red beak contrasting with the surrounding green foliage.  The scene is set outdoors under natural light, with dense vegetation lining the concrete edge of the water.  The swan moves steadily along a curved path parallel to the pond’s border, maintaining a medium size within the frame and facing rightward as it swims.  With no other animals or people present, the focus remains on the tranquil interaction between the swan and its habitat, emphasizing a serene and natural aquatic environment."
+                                }
+                                </script>
+                            </div>
+                            
+                            <div class="carousel-item" data-json-src="static/img/dataset/CLEVR_val_000001.json">
+                                <!-- <img src="static/img/dataset/CLEVR_val_000001.png" alt="CLEVR Dataset Sample 2"> -->
+                                <video autoplay loop muted playsinline width="100%" height="250" style="object-fit: cover; display: block;">
+                                    <source src="static/img/captions/bmx-bumps_web.mp4" type="video/mp4">
+                                </video>
+                                <script type="application/json">
+                                    {
+                                        "object_category": "BMX cyclist",
+                                        "camera_caption": "The camera smoothly pans to the right, maintaining a steady focus as it tracks the BMX cyclist from the side. As the video concludes, it subtly trucks rightward, incorporating a slight upward tilt to adjust its framing. The camera movement remains fluid with minimal shaking, ensuring a seamless and immersive viewing experience.",
+                                        "object_caption": "A graceful swan with a sleek, elongated neck and a striking black plumage glides smoothly across the water. Its body is robust, with feathers that appear soft and layered, creating a textured pattern that catches the light subtly. The swan's head is held high, showcasing a vibrant red beak that contrasts sharply with its dark feathers. As it moves, the swan's neck undulates gently, propelling it forward with a serene and effortless grace. The swan's eyes are alert, scanning its surroundings with a calm and composed demeanor. Throughout its journey, the swan maintains a steady pace, occasionally adjusting its direction with a slight flick of its neck, demonstrating both elegance and control in its aquatic environment.",
+                                        "scene_caption": "Under bright natural light, a BMX cyclist in protective gear rides with precision on an outdoor track. The sandy terrain features mounds and fencing, while banners and greenery suggest a recreational or competitive setting. The cyclist maintains a steady speed, navigating the undulating course with curved movements and executing jumps over small hills. Centered in the scene, they demonstrate agility and control, closely interacting with their bike as they follow the track's contours. The environment remains static, highlighting the dynamic motion of the cyclist and bicycle within a structured outdoor space."
+                                    }
+                                </script>
+                            </div>
+                            
+                            <div class="carousel-item" data-json-src="static/img/dataset/CLEVR_val_000002.json">
+                                <!-- <img src="static/img/dataset/CLEVR_val_000002.png" alt="CLEVR Dataset Sample 3"> -->
+                                <video autoplay loop muted playsinline width="100%" height="250" style="object-fit: cover; display: block;">
+                                    <source src="static/img/captions/breakdance-flare_web.mp4" type="video/mp4">
+                                </video>
+                                <script type="application/json">
+                                    {
+                                        "object_category": "B-boy",
+                                        "camera_caption": "The video opens with a wide shot, smoothly panning left to fully capture the young person performing handstand sequences, maintaining a steady and fluid motion throughout. The camera, positioned at eye level, allows the audience to feel as though they are right there watching the performance. As the video concludes, it ends abruptly without any transition effects, and there are no visible special effects used.",
+                                        "object_caption": "A person dressed in a light brown sweater and light blue jeans is captured in a dynamic sequence of movements. Initially, they are seen in a handstand position, with their legs extended and arms reaching upwards. As the sequence progresses, the person transitions into a series of fluid, acrobatic poses, showcasing their flexibility and strength. Their legs alternate between straight and bent positions, with one leg often lifted high, while the other remains extended. The person's head is tilted downward, and their facial expression conveys focus and determination. Throughout the sequence, the person maintains a sense of balance and control, demonstrating a high level of skill and athleticism.",
+                                        "scene_caption": "A young person performs a smooth, continuous handstand sequence on a paved outdoor surface under natural lighting. Dressed in light-colored pants and a beige top, they move with consistent speed, transitioning fluidly between handstands and leg extensions along a curved path. A stone wall with hanging flower baskets is positioned to the right, adding color to the scene, while a metal gate appears in the background. The performer remains close to the wall but distant from the gate, creating clear spatial contrasts. The setting suggests a quiet urban or suburban area where physical agility is on display."
+                                    }
+                                </script>
+                            </div>
+                            
+                            <div class="carousel-item" data-json-src="static/img/dataset/CLEVR_val_000003.json">
+                                <!-- <img src="static/img/dataset/CLEVR_val_000003.png" alt="CLEVR Dataset Sample 4"> -->
+                                <video autoplay loop muted playsinline width="100%" height="250" style="object-fit: cover; display: block;">
+                                    <source src="static/img/captions/camel_web.mp4" type="video/mp4">
+                                </video>
+                                <script type="application/json">
+                                    {
+                                        "object_category": "Striding camel",
+                                        "camera_caption": "The camera smoothly tracks right, maintaining a steady focus as it follows the foreground camel from the side.  After a brief moment, it pans left and slightly tilts up to adjust to the second camel that has entered the frame.  Throughout this fluid movement, the camera remains exceptionally stable, with no shaking, ensuring a seamless transition between the two camels.  The shot is composed as a medium shot, capturing both camels in their entirety within the enclosure, without the use of any special effects or transitions.",
+                                        "object_caption": "A camel with a robust, muscular build and a light brown coat is captured in motion, showcasing its graceful yet deliberate gait. Its long neck extends forward, leading its head, while its sturdy legs support its weight with ease. The camel's body sways gently with each step, its tail occasionally flicking to the side. As it moves, the camel's legs alternate in a rhythmic pattern, demonstrating its balance and agility. The camel's head occasionally turns, suggesting alertness and curiosity, while its overall demeanor exudes a calm and steady presence.",
+                                        "scene_caption": "In an outdoor enclosure under natural light, two camels are visible within a fenced area. The foreground camel, large and facing right, walks steadily along the sandy terrain in a straight path at a constant pace. Behind and to the left, a second camel stands still, observing its surroundings. A wooden fence runs parallel to their path on the right, while greenery and a thatched-roof structure form the backdrop. The camels’ differing actions—walking versus standing—highlight individual behaviors within a shared habitat, creating a calm, zoo-like scene focused on their interaction with the environment."
+                                    }
+                                </script>
+                            </div>
+                            
+                            <div class="carousel-item" data-json-src="static/img/dataset/CLEVR_val_000004.json">
+                                <!-- <img src="static/img/dataset/CLEVR_val_000004.png" alt="CLEVR Dataset Sample 5"> -->
+                                <video autoplay loop muted playsinline width="100%" height="250" style="object-fit: cover; display: block;">
+                                    <source src="static/img/captions/car-shadow_web.mp4" type="video/mp4">
+                                </video>
+                                <script type="application/json">
+                                    {
+                                        "object_category": "Silver car",
+                                        "camera_caption": "The camera begins with a medium shot, smoothly panning left to track the silver car from the side while trucking right to maintain a steady, moving perspective. As it trucks right, it gradually zooms out, transitioning into a wide shot that reveals the car in its entirety within the broader urban setting. The camera movement is fluid and continuous, with no shaking, and the transition from medium shot to wide shot is seamless, achieved solely through the camera's rightward motion and gradual zoom-out without any special effects.",
+                                        "object_caption": "A compact, silver hatchback car with a sleek, modern design is captured in motion. The vehicle features a smooth, aerodynamic body with a slightly curved roofline and a rear spoiler. Its windows are tinted, providing a subtle contrast to the light-colored body. The car's wheels are standard with a simple, utilitarian design, and the tires appear to be in good condition. As the sequence progresses, the car maintains a steady, linear trajectory, suggesting a smooth and controlled drive. The rear lights are distinct and vertically aligned, adding to the car's contemporary aesthetic. Throughout the sequence, the car's movement is consistent, indicating a stable and reliable performance.",
+                                        "scene_caption": "A silver car is positioned diagonally at an urban intersection, facing slightly northeast under bright natural light. It remains stationary, awaiting clearance from the nearby traffic light, which is part of Tier 2 elements including pedestrian crossings and crosswalks. The car is situated between two intersecting streets, adjacent to a crosswalk where potential pedestrian movement could intersect with traffic flow. Surrounding static elements in Tier 3 include buildings and paved roads, contributing to a modern, structured cityscape. The scene captures a paused moment in typical urban traffic, emphasizing vehicle-pedestrian coordination and the functional design of city intersections."
+                                    }
+                                </script>
+                            </div>
+                            
+                            
+                            <div class="carousel-item" data-json-src="static/img/dataset/CLEVR_val_000005.json">
+                                <!-- <img src="static/img/dataset/CLEVR_val_000005.png" alt="CLEVR Dataset Sample 6"> -->
+                                <video autoplay loop muted playsinline width="100%" height="250" style="object-fit: cover; display: block;">
+                                    <source src="static/img/captions/dog_web.mp4" type="video/mp4">
+                                </video>
+                                <script type="application/json">
+                                    {
+                                        "object_category": "Golden retriever",
+                                        "camera_caption": "The camera smoothly trucks right, maintaining a steady focus as it tracks the golden retriever from the side. As it trucks, it transitions into a pan-left motion, first slowing down before coming to a stop. The camera movement is smooth with minimal shaking, and the dog remains clearly defined within the frame throughout. The video concludes with a slight pan to the left, all while the camera gradually zooms out to reveal a wider view of the scene.",
+                                        "object_caption": "A golden retriever with a fluffy tail and a red harness moves gracefully across the scene. Its fur is soft and slightly wavy, with a gentle sheen that catches the light. The dog’s ears are floppy, framing its face, and its eyes are focused downward, suggesting a sense of curiosity or intent. As it walks, its gait is steady and purposeful, with each paw lifting and landing in a rhythmic pattern. The dog’s head occasionally dips lower, as if sniffing or investigating something of interest on the ground. Its overall demeanor is calm and composed, exuding a sense of gentle confidence as it navigates its environment.",
+                                        "scene_caption": "A medium-sized golden retriever wearing a red harness moves across a dry, grassy area with scattered vegetation and fallen leaves under natural light. The dog follows a gentle left-to-right curved path, turning slightly toward the camera while maintaining a moderate, steady pace that suggests relaxed exploration. It remains centrally framed throughout, with subtle changes in orientation as it naviges the terrain. A metal fence and dense shrubs appear in the background, framing the scene but kept at a distance to emphasize the open space available for movement. With no other objects or agents present, the scene conveys a quiet, natural setting where the dog enjoys unstructured, solitary activity."
+                                    }
+                                </script>
+                            </div>
+
+
+                            <div class="carousel-item" data-json-src="static/img/dataset/CLEVR_val_000005.json">
+                                <!-- <img src="static/img/dataset/CLEVR_val_000005.png" alt="CLEVR Dataset Sample 6"> -->
+                                <video autoplay loop muted playsinline width="100%" height="250" style="object-fit: cover; display: block;">
+                                    <source src="static/img/captions/elephant_web.mp4" type="video/mp4">
+                                </video>
+                                <script type="application/json">
+                                    {
+                                        "object_category": "Elephant",
+                                        "camera_caption": "The camera smoothly pans to the right, maintaining a steady focus as it tracks the medium-sized elephant from the side. Midway through the video, the pace of the pan briefly accelerates before slowing down again, all while the elephant becomes gradually smaller in the frame. There is no noticeable tilting or trucking, and the camera remains fixed in its position without any sudden jumps. The shot is handled with remarkable steadiness, exhibiting minimal shaking.",
+                                        "object_caption": "An elephant with a robust, wrinkled body and a long, curved trunk moves steadily forward. Its large ears flap gently as it walks, and its thick legs carry it with a deliberate, rhythmic gait. The elephant's skin is a dusty gray, with visible folds and creases that shift as it moves. Its tail sways slightly with each step, adding to the fluidity of its motion. The elephant's head occasionally turns, suggesting alertness and curiosity, while its massive body maintains a steady pace, exuding a sense of calm and strength.",
+                                        "scene_caption": "A medium-sized elephant walks steadily across a sandy outdoor zoo enclosure, moving in a straight path at a constant speed toward the right. It passes near mist-emitting sprinklers and is positioned close to rocks within a naturalistic habitat. The static background includes trees, a building, and bright daylight, with no other animals or humans present. The scene conveys a routine, observational setting typical of a recreational zoo environment."
+                                    }
+                                </script>
+                            </div>
+
+
+                            <div class="carousel-item" data-json-src="static/img/dataset/CLEVR_val_000005.json">
+                                <!-- <img src="static/img/dataset/CLEVR_val_000005.png" alt="CLEVR Dataset Sample 6"> -->
+                                <video autoplay loop muted playsinline width="100%" height="250" style="object-fit: cover; display: block;">
+                                    <source src="static/img/captions/hike_web.mp4" type="video/mp4">
+                                </video>
+                                <script type="application/json">
+                                    {
+                                        "object_category": "Hiker",
+                                        "camera_caption": "The camera smoothly trucks right, maintaining a steady focus as it tracks the hiker from the side. As it trucks, it gradually pans left to adjust its orientation to the hiker, causing the hiker to slowly become smaller in the frame. The camera movement is slightly unsteady with some shaking, resulting in a slightly imperfect trucking motion. Throughout this shot, the camera maintains an eye-level perspective, and there are no noticeable transitions or special effects used.",
+                                        "object_caption": "A hiker wearing a camouflage cap and sunglasses is walking steadily forward. They are dressed in a light blue, long-sleeved shirt with rolled-up sleeves and dark green cargo pants. The individual carries a large, black backpack with multiple compartments and straps, which is securely fastened over both shoulders. Their gait is relaxed and purposeful, with each step taken in a rhythmic, deliberate manner. The person’s posture is upright, and their head is slightly tilted forward, suggesting focus and determination. The movement is smooth and continuous, indicating a sense of direction and intent.",
+                                        "scene_caption": "A hiker steadily traverses a rugged mountainous landscape under bright natural light. The scene features expansive rocky slopes and sparse vegetation, with distant peaks in the background. The hiker, wearing sturdy attire and carrying a large backpack, moves at a constant pace from left to right across the frame. Trekking poles are used for support, indicating preparation for an extended journey. Positioned centrally, the hiker's forward-facing orientation and alignment with the terrain emphasize purposeful movement through the natural contours of the land. The setting is remote and unspoiled, highlighting the raw beauty of the mountains and the solitude of the trek. Minimal dynamic elements draw focus to the hiker’s steady, linear motion and their interaction with the challenging environment."
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text Display Area -->
+                    <div class="text-display-area">
+                        <div class="text-container">
+                            <p id="display-text">Click the video to view more semantic annotations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                        .dataset-container {
+                            margin: 1rem 0;
+                            padding: 2rem;
+                            background: linear-gradient(320deg,#52e5e7 0%,#130cb7  20%, #000000 100%);
+                            /* background: linear-gradient(120deg, #081325, #2c4a6e 80%, #a89467 100%); */
+                            border-radius: 12px;
+                        }
+                        /* Image Carousel Styles */
+                        .image-carousel-container {
+                            position: relative;
+                            overflow: hidden;
+                            width: 100%;
+                        }
+                        
+                        @keyframes slideCarousel {
+                            to {
+                               transform: translate(calc(-50% - 0.25rem)); /* 0.25rem is half the gap */
+                            }
+                        }
+                        
+                        .image-carousel {
+                            display: flex;
+                            width: max-content;
+                            animation: slideCarousel 20s linear infinite;
+                            gap: 0.5rem;
+                        }
+                        
+                        .image-carousel:hover {
+                            animation-play-state: paused;
+                        }
+                        
+                        .carousel-item {
+                            flex: 0 0 400px;
+                            min-width: 300px;
+                            max-width: 400px;
+                            scroll-snap-align: start;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                            background-color: white;
+                            transition: transform 0.3s ease, box-shadow 0.3s ease;
+                            position: relative;
+                            margin-right: 0.5rem;
+                            cursor: pointer;
+                        }
+                        
+                        .carousel-item:hover {
+                            transform: translateY(-5px);
+                            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                        }
+                        
+                        .carousel-item img {
+                            width: 100%;
+                            height: 250px;
+                            object-fit: cover;
+                            display: block;
+                        }
+                        
+                        .hidden-text-data {
+                            display: none;
+                        }
+                        
+                        /* Text Display Area Styles */
+                        .text-display-area {
+                            background-color: rgba(255, 255, 255, 0.05);
+                            border: 1px solid rgba(255, 255, 255, 0.1);
+                            border-radius: 12px;
+                            padding: 1.5rem;
+                            margin-top: 1rem; /* This now controls the distance */
+                            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                            min-height: 80px;
+                            display: flex;
+                            align-items: center;
+                        }
+                        
+                        .text-container {
+                            max-width: 100%;
+                            margin: 0 auto;
+                            width: 100%;
+                        }
+                        
+                        .text-container p {
+                            font-size: 1rem;
+                            line-height: 1.5;
+                            color: #f0f0f0;
+                            margin: 0;
+                            text-align: left;
+                            transition: opacity 0.3s ease;
+                            white-space: pre-wrap;
+                            font-family: monospace;
+                        }
+                        
+                        .text-container .json-key,
+                        .vlm-response .json-key {
+                            color: #fca9ff;
+                        }
+                        .text-container .json-string,
+                        .vlm-response .json-string {
+                            color: #b4fbb9;
+                        }
+                        .text-container .json-number,
+                        .vlm-response .json-number {
+                            color: #a5dfff;
+                        }
+                        .text-container .json-boolean,
+                        .vlm-response .json-boolean {
+                            color: #ffcc99;
+                        }
+                        .text-container .json-null,
+                        .vlm-response .json-null {
+                            color: #999;
+                        }
+                        
+                        /* Responsive adjustments */
+                        @media (max-width: 768px) {
+                            .carousel-item {
+                                flex: 0 0 90%;
+                                min-width: 250px;
+                                margin-right: 0.25rem;
+                            }
+                            
+                            .image-carousel {
+                                animation-duration: 30s; /* Adjust mobile speed */
+                            }
+                        }
+    
+                        /* Chat Section Styles */
+                        .exp-container {
+                            font-family: 'system-ui', sans-serif;
+                            padding: 2rem;
+                            background: linear-gradient(120deg, #081325, #2c4a6e 80%, #a89467 100%);
+                            border-radius: 12px;
+                            position: relative;
+                        }
+                        .chat-bubble {
+                            position: relative;
+                            padding: 0.5rem;
+                            border-radius: 12px;
+                            margin-bottom: 1.0rem;
+                            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                            border: 1px solid rgba(255, 255, 255, 0.1);
+                            background-color: rgba(255, 255, 255, 0.05);
+                            font-size: 1.1rem; /* Larger font size */
+                        }
+                        .chat-icon {
+                            position: absolute;
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                            background: white;
+                            padding: 5px;
+                            object-fit: cover;
+                            top: 15px;
+                            transform: none;
+                        }
+                        .text-container .json-key,
+                        .vlm-response .json-key {
+                            color: #fca9ff;
+                        }
+                        .text-container .json-string,
+                        .vlm-response .json-string {
+                            color: #b4fbb9;
+                        }
+                        .text-container .json-number,
+                        .vlm-response .json-number {
+                            color: #a5dfff;
+                        }
+                        .text-container .json-boolean,
+                        .vlm-response .json-boolean {
+                            color: #ffcc99;
+                        }
+                        .text-container .json-null,
+                        .vlm-response .json-null {
+                            color: #999;
+                        }
+                        .user-prompt {
+                            margin-left: auto;
+                            margin-right: 0;
+                            max-width: 90%;
+                            padding-right: 70px;
+                            margin-bottom: 1.0rem;
+                            padding-bottom: 0.5rem;
+                        }
+                        .user-prompt .chat-icon {
+                            right: 15px;
+                            left: auto;
+                        }
+                        .user-prompt-content {
+                            display: flex;
+                            align-items: flex-start;
+                            gap: 1.5rem;
+                        }
+                        .user-prompt-content p {
+                            font-size: 1.5rem;
+                            color: #f0f0f0;
+                        }
+                         .vlm-response {
+                            margin: 0;
+                            flex: 1.5;
+                            min-width: 0;
+                            padding-left: 70px;
+                            color: #f0f0f0;
+                        }
+                        .vlm-response .chat-icon {
+                            left: 15px;
+                        }
+                        .agent-response-row {
+                            display: flex;
+                            align-items: center;
+                            gap: 1rem;
+                            margin-left: 0;
+                            justify-content: space-between;
+                        }
+                        .flow-arrow {
+                            font-size: 3rem;
+                            color: #fff;
+                            margin: 0;
+                        }
+                        .blender-container {
+                            position: relative;
+                            flex: 2;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                        .blender-container .blender-gif {
+                            width: 100%;
+                            border-radius: 8px;
+                            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+                            border: 1px solid #e1e1e1;
+                        }
+                        .blender-icon-overlay {
+                            position: absolute;
+                            width: 40px;
+                            height: 40px;
+                            top: 10px;
+                            left: 10px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 50%;
+                            padding: 5px;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                        }
+                        .iterative-arrow {
+                            position: absolute;
+                            right: 30px;
+                            top: 220px;
+                            width: 120px;
+                            height: 180px;
+                            pointer-events: none;
+                            z-index: 10;
+                        }
+                        .straight-arrow {
+                            position: absolute;
+                            font-size: 3rem;
+                            color: white;
+                            top: 280px;
+                            right: 25%;
+                            pointer-events: none;
+                            z-index: 10;
+                        }
+                    </style>
+    
+                    <script>
+                        // Image Carousel functionality
+                        document.addEventListener('DOMContentLoaded', function() {
+                            function syntaxHighlight(jsonString) {
+                                if (typeof jsonString != 'string') {
+                                    jsonString = JSON.stringify(jsonString, undefined, 2);
+                                }
+                                jsonString = jsonString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                                return jsonString.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                                    var cls = 'number';
+                                    if (/^"/.test(match)) {
+                                        if (/:$/.test(match)) {
+                                            cls = 'key';
+                                        } else {
+                                            cls = 'string';
+                                        }
+                                    } else if (/true|false/.test(match)) {
+                                        cls = 'boolean';
+                                    } else if (/null/.test(match)) {
+                                        cls = 'null';
+                                    }
+                                    return '<span class="json-' + cls + '">' + match + '</span>';
+                                });
+                            }
+                            const carouselContainer = document.querySelector('.image-carousel-container');
+                            const carousel = document.querySelector('.image-carousel');
+                            const displayText = document.getElementById('display-text');
+                            
+                            // Duplicate all carousel items for infinite loop
+                            const items = Array.from(carousel.children);
+                            items.forEach(item => {
+                                const clone = item.cloneNode(true);
+                                clone.setAttribute('aria-hidden', 'true');
+                                carousel.appendChild(clone);
+                            });
+    
+                            // Adjust animation speed based on screen width
+                            function updateCarouselSpeed() {
+                                const isMobile = window.innerWidth <= 768;
+                                carousel.style.animationDuration = isMobile ? '30s' : '20s';
+                            }
+                            
+                            // Initial setup
+                            updateCarouselSpeed();
+                            
+                            // Update on window resize
+                            window.addEventListener('resize', updateCarouselSpeed);
+                            
+                            // Pause animation on hover
+                            carousel.addEventListener('mouseenter', () => {
+                                carousel.style.animationPlayState = 'paused';
+                            });
+                            
+                            carousel.addEventListener('mouseleave', () => {
+                                carousel.style.animationPlayState = 'running';
+                                displayText.style.opacity = '0';
+                                setTimeout(() => {
+                                    displayText.textContent = 'Click the video to view more semantic annotations';
+                                    displayText.style.opacity = '1';
+                                }, 150);
+                            });
+                            
+                            // Update text on hover
+                            const allItems = carousel.querySelectorAll('.carousel-item');
+                            allItems.forEach(item => {
+                                item.addEventListener('mouseenter', function() {
+                                    updateText(this);
+                                });
+                            });
+                            
+                            // Function to update the text display by fetching JSON
+                            function updateText(item) {
+                                const jsonScript = item.querySelector('script[type="application/json"]');
+                                if (!jsonScript) {
+                                    displayText.textContent = 'No JSON data found for this item.';
+                                    return;
+                                }
+    
+                                displayText.style.opacity = '0';
+    
+                                try {
+                                    const data = JSON.parse(jsonScript.textContent);
+    
+                                    // 优先展示四个字段
+                                    if (
+                                        data.object_category ||
+                                        data.camera_caption ||
+                                        data.object_caption ||
+                                        data.scene_caption
+                                    ) {
+                                        let html = '';
+                                        if (data.object_category) {
+                                            html += `<b>Object category:</b> ${data.object_category}<br>`;
+                                        }
+                                        if (data.camera_caption) {
+                                            html += `<b>Camera caption:</b> ${data.camera_caption}<br>`;
+                                        }
+                                        if (data.object_caption) {
+                                            html += `<b>Object caption:</b> ${data.object_caption}<br>`;
+                                        }
+                                        if (data.scene_caption) {
+                                            html += `<b>Scene caption:</b> ${data.scene_caption}<br>`;
+                                        }
+                                        setTimeout(() => {
+                                            displayText.innerHTML = html;
+                                            displayText.style.opacity = '1';
+                                        }, 150);
+                                    } else if (data.scenes && data.scenes[0] && data.scenes[0].objects && data.scenes[0].objects[0]) {
+                                        // 兼容原有逻辑
+                                        const firstObject = data.scenes[0].objects[0];
+                                        const textContent = JSON.stringify(firstObject, null, 2) + '...';
+                                        setTimeout(() => {
+                                            displayText.innerHTML = syntaxHighlight(textContent);
+                                            displayText.style.opacity = '1';
+                                        }, 150);
+                                    } else {
+                                        setTimeout(() => {
+                                            displayText.textContent = 'Could not find valid object data in the JSON file.';
+                                            displayText.style.opacity = '1';
+                                        }, 150);
+                                    }
+                                } catch (error) {
+                                    console.error('Error parsing JSON:', error);
+                                    setTimeout(() => {
+                                        displayText.textContent = 'Error parsing object details.';
+                                        displayText.style.opacity = '1';
+                                    }, 150);
+                                }
+                            }
+                            
+                            // No need to initialize with first item's text anymore
+    
+                            function syntaxHighlightVLM(selector) {
+                                const pre = document.querySelector(selector);
+                                if (!pre) return;
+                                const text = pre.textContent || pre.innerText;
+                                pre.innerHTML = syntaxHighlight(text);
+                            }
+    
+                            syntaxHighlightVLM('#vlm-output-code');
+                            syntaxHighlightVLM('#refine-output-code');
+                        });
+                    </script>
+                </div>
+
+
                 </div>
             </div>
         </div>
-    </section> -->
 
-    <section class="features" id="pipeline">
-        <div class="container">
-                <div class="feature-card">                    
-            <h2>Moving Object Recovery</h2>
-                    <img src="assets/moving_obj_1.png" alt="Pipeline" class="pipeline-image">
-                </div>
+        <div id='dynamicverse_dataset' class="sub-section">
+            <h2 class="text">DynamicVerse Dataset</h2>
         </div>
-    </section>
 
 
-    <section class="features" id="pipeline">
-        <div class="container">
-                <div class="feature-card">                    
-            <h2>Metric-Scale 4D Reconstruction</h2>
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <img src="assets/suppl_vis_1.png" alt="" style="width: 45%; max-width: 400px; height: auto; border-radius: 8px;">
-                <img src="assets/suppl_vis_2.png" alt="" style="width: 45%; max-width: 400px; height: auto; border-radius: 8px;">
-            </div>
-            <!-- For more visualizations, please refer to anonymous link:  <a href="https://anonymous_dynamicverse.github.io/" target="_blank">More Amazing Results</a>. -->
+
+        <div class="vision-block">
+            <div id="metrics" class="sub-section">
+            <!-- <h1 class="text">Data Statistics and Sources </h1> -->
+                <d-figure id="fig-studyadapter" >
+                    <figure>
+                        <img data-zoomable="" draggable="false" src="static/img/DynamicVerse_data.png" alt="DynamicVerse Data">
+                    </figure>
+                </d-figure>
+                <d-figure id="fig-studyadapter" >
+                    <figure>
+                        <img data-zoomable="" draggable="false" src="static/img/DynamicVerse_data_comparison.png" alt="DynamicVerse Data">
+                    </figure>
+                </d-figure>
+                <p class="text">
+                    We provide the statistics and data source of DynamicVerse. We also compare DynamicVerse with large-scale 2D video datasets and existing 4D scene datasets. DynamicVerse expands the data scale and annotation richness compared to prior works.
+                </p>
             </div>
         </div>
-    </section>
 
-
-
-
-
-    <section class="features" id="pipeline">
-        <div class="container">
-                <div class="feature-card">                    
-            <h2>Dynamic Content Captioning</h2>
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <img src="assets/suppl_cap_1.png" alt="图片描述1" style="width: 30%; max-width: 400px; height: auto; border-radius: 8px;">
-                <img src="assets/suppl_cap_2.png" alt="图片描述2" style="width: 30%; max-width: 400px; height: auto; border-radius: 8px;">
-                <img src="assets/suppl_cap_3.png" alt="图片描述3" style="width: 30%; max-width: 400px; height: auto; border-radius: 8px;">
-            </div>
-                </div>
+                
+        <div id="conclusion" style="position: relative; margin-top: 40px; margin-bottom: 0px;">
+            <h1 class="text" style="margin-top:0px; margin-bottom:10px">Conclusion</h1>
+            <p class="text">
+                In this work, we addressed the critical limitations in traditional 4D data curation concerning scalability, physical reality, and modality diversity. We introduced DynamicGen, a novel automated pipeline leveraging foundation models for video filtering, metric-scale geometric and moving object recovery, alongside hierarchical detailed semantic captioning from raw videos. We rigorously validated the capabilities of DynamicGen through standard benchmarks for video depth and camera pose/intrinsics estimation, qualitative generalization analysis on diverse web videos, and human/LLM-assisted evaluations confirming the high quality of the generated captions Utilizing DynamicGen, we successfully constructed DynamicVerse, a large-scale 4D dataset offering over 100K dynamic scenes with rich physically-aware multi-modal annotations. Collectively, this work provides both a robust and scalable methodology for 4D data generation and a comprehensive new resource, DynamicVerse, to drive future research in dynamic 4D scene understanding.
+            </p>
         </div>
-    </section>
 
 
 
-    <script src="js/scripts.js"></script>
-</body>
+        <div id="bibtex" style="position: relative; margin-top: 40px; margin-bottom: 0px; color: gray;">
+            <h2 class="text" style="margin-top:0px; margin-bottom:10px">BibTeX</h2>
+            <!-- <p class="bibtex">
+                @article{yang2024think,<br>
+                    title={{Thinking in Space: How Multimodal Large Language Models See, Remember and Recall Spaces}},<br>
+                    author={Yang, Jihan and Yang, Shusheng and Gupta, Anjali and Han, Rilyn and Fei-Fei, Li and Xie, Saining},<br>
+                    year={2024},<br>
+                    journal={arXiv preprint},<br>
+                }
+            </p> -->
+            <!-- <pre><code>@article{yang2024think,
+                title={{Thinking in Space: How Multimodal Large Language Models See, Remember and Recall Spaces}},
+                author={Yang, Jihan and Yang, Shusheng and Gupta, Anjali W. and Han, Rilyn and Fei-Fei, Li and Xie, Saining},
+                year={2024},
+                journal={arXiv preprint arXiv:2412.14171},
+            }</code></pre> -->
+
+            <!-- <p class="text" style="text-align: right;">
+                The website template was originally borrowed from <a href="https://cambrian-mllm.github.io/">here</a>.
+            </p> -->
+        </div>
+        
+        <script src="./static/js/nav-bar.js"></script>
+    </body>
 </html>
