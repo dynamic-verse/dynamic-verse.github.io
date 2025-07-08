@@ -160,7 +160,7 @@
                     <img data-zoomable="" draggable="false" src="static/img/teaser.png" alt="Stage 1 Pipeline">
                 </figure>
             </d-figure>
-            <p style="text-align: center;">
+            <p style="text-align: center;  width: 120%; max-width: none;">
                 TLDR: <strong>DynamicVerse</strong> is a physical-scale, multi-modal 4D modeling framework for real-world video, which contains a novel automated data curation pipeline and corresponding large-scale 4D dataset.
             </p>
 
@@ -180,7 +180,7 @@
             ></iframe>
           </div> -->
 
-        <p style="text-align: center;">    
+        <p style="text-align: center;  width: 120%; max-width: none;"> 
             <ul>
               <li>We develop <strong>DynamicGen</strong>, a novel automated data curation pipeline designed to generate physically-aware multi-modal 4D data at scale. This pipeline contains two main stages: (1) metric-scale geometry and moving object recovery from raw videos, and (2) hierarchical detailed semantic captions generation at three granularities (i.e., object, camera and scene). Powered by foundation models (i.e., VFMs, VLMs, LLMs), DynamicGen efficiently generate 4D data at scale, thus addressing the critical scalability, physical reality and modality diversity limitations of traditional 4D data curation.</li>
               <li>We introduce <strong>DynamicVerse</strong>, a large-scale 4D dataset featuring diverse dynamic scenes accompanied by rich multi-modal annotations including metric-scale point maps, camera parameters, object masks with corresponding categories, and detailed descriptive captions. DynamicVerse encompasses 100K+ 4D scenes coupled with 800K+ masklets, sourced through a combination of massive 2D video datasets and existing 4D datasets. This represents a significant improvement in terms of data scale, scene and modality diversity compared to prior 4D datasets.</li>
@@ -435,7 +435,8 @@
                         .dataset-container {
                             margin: 1rem 0;
                             padding: 2rem;
-                            background: linear-gradient(320deg,#52e5e7 0%,#130cb7  20%, #000000 100%);
+                            background: linear-gradient(320deg,#F3F1FA 0%,#f6f1fa  20%, #f9f1f8 100%);
+                            /* background: linear-gradient(320deg,#52e5e7 0%,#130cb7  20%, #000000 100%); */
                             /* background: linear-gradient(120deg, #081325, #2c4a6e 80%, #a89467 100%); */
                             border-radius: 12px;
                         }
