@@ -190,6 +190,7 @@ body {
   display: block; /* Prevent inline spacing issues */
   margin: 0 auto 20px; /* Center the image horizontally and add margin below */
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); /* 加深阴影效果 */
+  border-radius: 12px; /* 添加圆角边框 */
 }
 
 .button-container {
